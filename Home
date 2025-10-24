@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<title>10 Rörliga YouTube-rutor (1 autoplay)</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #111;
+  }
+
+  iframe.youtubeBox {
+    position: absolute;
+    width: 320px;
+    height: 180px;
+    border: 2px solid #fff;
+    border-radius: 8px;
+  }
+</style>
+</head>
+<body>
+<div id="container"></div>
+
+<script>
+  const container = document.getElementById("container");
+  const antalRutor = 10;
+  const rutor = [];
+
+  for (let i = 0; i < antalRutor; i++) {
+    const iframe = document.createElement("iframe");
+    iframe.classList.add("youtubeBox");
+
+    // Bara den första rutan får autoplay med ljud
+    if (i === 0) {
+      iframe.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0";
+    } else {
+      iframe.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0&mute=1";
+    }
+
+    iframe.allow = "autoplay; encrypted-media";
+    iframe.frameBorder = "0";
+    container.appendChild(iframe);
+
+    // Slumpmässig startposition
+    const posX = Math.random() * (window.innerWidth - 320);
+    const posY = Math.random() * (window.innerHeight - 180);
+
+    // Slumpmässig hastighet
+    const dx = (Math.random() * 2 + 1) * (Math.random() < 0.5 ? 1 : -1);
+    const dy = (Math.random() * 2 + 1) * (Math.random() < 0.5 ? 1 : -1);
+
+    rutor.push({element: iframe, x: posX, y: posY, dx: dx, dy: dy});
+  }
+
+  // Animation
+  function flyttaRutor() {
+    rutor.forEach(ruta => {
+      ruta.x += ruta.dx;
+      ruta.y += ruta.dy;
+
+      // Studsa mot kanterna
+      if (ruta.x <= 0 || ruta.x >= window.innerWidth - 320) ruta.dx = -ruta.dx;
+      if (ruta.y <= 0 || ruta.y >= window.innerHeight - 180) ruta.dy = -ruta.dy;
+
+      ruta.element.style.left = `${ruta.x}px`;
+      ruta.element.style.top = `${ruta.y}px`;
+    });
+
+    requestAnimationFrame(flyttaRutor);
+  }
+
+  flyttaRutor();
+</script>
+</body>
+</html>
+
+
